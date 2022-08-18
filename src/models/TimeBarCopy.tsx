@@ -1,11 +1,11 @@
+import { G6, GraphinContext } from '@antv/graphin';
 import React from 'react';
-import { GraphinContext } from '@antv/graphin';
-import G6 from '@antv/g6';
+
 const defaultOptions = {
-  className: 'graphin-minimap',
-  viewportClassName: 'graphin-minimap-viewport',
+  className: 'graphin-timebar',
+  viewportClassName: 'graphin-timebar-viewport',
   // Minimap 中默认展示和主图一样的内容，KeyShape 只展示节点和边的 key shape 部分，delegate表示展示自定义的rect，用户可自定义样式
-  type: 'default' as 'default' | 'keyShape' | 'delegate' | undefined,
+  type: 'default' as 'simple' | 'trend' | undefined,
   padding: 50,
   size: [200, 120],
   delegateStyle: {
@@ -14,9 +14,14 @@ const defaultOptions = {
   },
   refresh: true,
 };
-export interface MiniMapProps {
+export interface TimeBarProps {
   /**
-   * @description MiniMap 配置项
+   * @description 是否开启
+   * @default false
+   */
+  visible: boolean;
+  /**
+   * @description TimeBar 配置项
    * @default
    */
   options?: Partial<typeof defaultOptions>;
@@ -28,8 +33,8 @@ const styles: {
 } = {
   container: {
     position: 'absolute',
-    bottom: 30,
-    left: 0,
+    //bottom: 0,
+    //left: 0,
     background: '#fff',
     boxShadow:
       '0px 8px 10px -5px rgba(0,0,0,0.2), 0px 16px 24px 2px rgba(0,0,0,0.14), 0px 6px 30px 5px rgba(0,0,0,0.12)',
@@ -37,30 +42,47 @@ const styles: {
 };
 let containerRef: null | HTMLDivElement = null;
 const containerHeight = 120;
-const MiniMap: React.FunctionComponent<MiniMapProps> = props => {
+const TimeBar: React.FunctionComponent<TimeBarProps> = props => {
   const { graph } = React.useContext(GraphinContext);
   const { options, style = {} } = props;
+  const timeBarData:any = [];
+
+  for (let i = 0; i < 100; i++) {
+      timeBarData.push({
+        date: `2020${i}`,
+        value: Math.round(Math.random() * 300),
+      });
+    }
   React.useEffect(() => {
     const width = graph.getWidth();
     const height = graph.getHeight();
     const padding = graph.get('fitViewPadding');
-    console.log(graph.getStackData())
+
     const containerSize = [((width - padding * 2) / (height - padding * 2)) * containerHeight, containerHeight];
 
-    const miniMapOptions = {
+    const timeBarOptions:any = {
       container: containerRef,
       ...defaultOptions,
       size: containerSize,
       ...options,
+      x: 0,
+        y: 0,
+        width,
+        height: 150,
+        padding: 10,
+        type: 'trend',
+        trend: {
+          data: timeBarData,
+        },
     };
 
-    const miniMap = new G6.Minimap(miniMapOptions);
+    const timeBar = new G6.TimeBar(timeBarOptions);
 
-    graph.addPlugin(miniMap);
-
+    graph.addPlugin(timeBar);
+    console.log(graph)
     return () => {
-      if (miniMap && !miniMap.destroyed) {
-        graph.removePlugin(miniMap);
+      if (timeBar && !timeBar.destroyed) {
+        //graph.removePlugin(timeBar);
       }
     };
   }, [options]);
@@ -80,4 +102,4 @@ const MiniMap: React.FunctionComponent<MiniMapProps> = props => {
   );
 };
 
-export default MiniMap;
+export default TimeBar;

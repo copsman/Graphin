@@ -1,5 +1,6 @@
 import Graphin from '@antv/graphin';
 import { GI_LOCAL_DATA } from "../data/GI_DATA"
+import { ES_DATA } from '../data/ELASTIC_DATA';
 
 import iconLoader from '@antv/graphin-icons';
 import '@antv/graphin-icons/dist/index.css';

@@ -53,14 +53,14 @@ const Timebar: React.FunctionComponent<TimeBarProps> = props => {
     const containerSize = [((width - padding * 2) / (height - padding * 2)) * containerHeight, containerHeight];
     const timeBarData:any = [];
 
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 1000; i++) {
         timeBarData.push({
-          date: `2019${i}`,
+          date: `2020${i}`,
           value: Math.round(Math.random() * 300),
         });
       }
     const timeBarOptions:any = {
-        //container: containerRef,
+        container: containerRef,
       //...defaultOptions,
       //size: containerSize,
       //...options,
@@ -69,7 +69,7 @@ const Timebar: React.FunctionComponent<TimeBarProps> = props => {
         width,
         height: 150,
         padding: 10,
-        type: 'simple',
+        type: 'trend',
         trend: {
           data: timeBarData,
         },
@@ -79,10 +79,10 @@ const Timebar: React.FunctionComponent<TimeBarProps> = props => {
     graph.addPlugin(timeBar);
     return () => {
       if (timeBar && !timeBar.destroyed) {
-        graph.removePlugin(timeBar);
+        //graph.removePlugin(timeBar);
       }
     };
-  }, [options]);
+  }, []);
 
   const mergedStyle = {
     ...styles.container,
